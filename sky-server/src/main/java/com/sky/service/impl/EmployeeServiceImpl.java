@@ -1,5 +1,7 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
@@ -7,6 +9,7 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -14,6 +17,7 @@ import com.sky.exception.BaseException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.properties.JwtProperties;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -25,6 +29,7 @@ import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -83,9 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void add(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
 
-        /*employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setName(employeeDTO.getName());
+        /*employee.setName(employeeDTO.getName());
         employee.setSex(employeeDTO.getSex());
         employee.setIdNumber(employeeDTO.getIdNumber());
 
@@ -93,6 +96,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new BaseException("手机号码定义错误");
         }
         employee.setPhone(employeeDTO.getPhone());*/
+
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
 
         BeanUtils.copyProperties(employeeDTO, employee);
 
@@ -107,5 +113,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param employeePageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult query(EmployeePageQueryDTO employeePageQueryDTO) {
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+        List<Employee> list = employeeMapper.list(employeePageQueryDTO.getName());
+        Page<Employee> p = (Page<Employee>) list;
+
+        PageResult pageResult = new PageResult(p.getTotal(), list);
+
+        return pageResult;
     }
 }
