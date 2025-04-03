@@ -29,6 +29,9 @@
             <if test="username != null">
                 username = #{username},
             </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
             update_time = #{updateTime},
             update_user = #{updateUser}
         </set>

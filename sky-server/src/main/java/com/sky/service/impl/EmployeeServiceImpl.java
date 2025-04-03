@@ -98,9 +98,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employee.setPhone(employeeDTO.getPhone());*/
 
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-
         BeanUtils.copyProperties(employeeDTO, employee);
 
         employee.setStatus(StatusConstant.ENABLE);
@@ -108,8 +105,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         String jwt = httpServletRequest.getHeader(jwtProperties.getAdminTokenName());
         Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), jwt);
-        employee.setCreateUser(Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString()));
-        employee.setUpdateUser(Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString()));
+
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateUser(Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString()));
+//        employee.setUpdateUser(Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString()));
+
 //        employee.setCreateUser(BaseContext.getCurrentId());
 //        employee.setUpdateUser(BaseContext.getCurrentId());
 
@@ -142,11 +143,19 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void adjustStatus(String id, String status) {
+        Employee employee = new Employee();
+
+        employee.setId(Long.valueOf(id));
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
+
         if(status.equals("1")) {
-            employeeMapper.enable(id);
+            employee.setStatus(1);
         } else if(status.equals("0")) {
-            employeeMapper.disable(id);
+            employee.setStatus(0);
         }
+
+        employeeMapper.update(employee);
     }
 
     /**
@@ -172,8 +181,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
 
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.update(employee);
     }
@@ -187,9 +196,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         String originalPassword = employeeMapper.selectById(passwordEditDTO.getEmpId()).getPassword();
 
         if(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).equals(originalPassword)) {
+            Employee employee = new Employee();
             String newPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());
 
-            employeeMapper.updatePassword(newPassword, passwordEditDTO.getEmpId());
+//            employee.setPassword(newPassword);
+//            employee.setId(passwordEditDTO.getEmpId());
+//            employee.setUpdateTime(LocalDateTime.now());
+//            employee.setUpdateUser(BaseContext.getCurrentId());
+
+            employeeMapper.update(employee);
         } else {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
