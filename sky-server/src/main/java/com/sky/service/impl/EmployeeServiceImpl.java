@@ -10,6 +10,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -131,5 +132,66 @@ public class EmployeeServiceImpl implements EmployeeService {
         PageResult pageResult = new PageResult(p.getTotal(), list);
 
         return pageResult;
+    }
+
+    /**
+     * 启用/禁用员工账号
+     *
+     * @param id
+     * @param status
+     */
+    @Override
+    public void adjustStatus(String id, String status) {
+        if(status.equals("1")) {
+            employeeMapper.enable(id);
+        } else if(status.equals("0")) {
+            employeeMapper.disable(id);
+        }
+    }
+
+    /**
+     * 根据ID查询员工信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee queryById(String id) {
+        Employee employee = employeeMapper.selectById(Long.valueOf(id));
+
+        return employee;
+    }
+
+    /**
+     * 编辑员工
+     *
+     * @param employeeDTO
+     */
+    @Override
+    public void editEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 编辑密码
+     * @param passwordEditDTO
+     */
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        String originalPassword = employeeMapper.selectById(passwordEditDTO.getEmpId()).getPassword();
+
+        if(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()).equals(originalPassword)) {
+            String newPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());
+
+            employeeMapper.updatePassword(newPassword, passwordEditDTO.getEmpId());
+        } else {
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
     }
 }
