@@ -6,10 +6,7 @@ import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
 import com.sky.enumeration.OperationType;
 import com.sky.vo.DishVO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -44,7 +41,7 @@ public interface DishMapper {
      * @return
      */
     @Select("select * from dish where id = #{id}")
-    DishVO selectById(Long id);
+    Dish selectById(Long id);
 
     /**
      * 根据id删除菜品
@@ -53,4 +50,28 @@ public interface DishMapper {
     @Delete("delete from dish where id = #{id}")
     void deleteById(Long id);
 
+    /**
+     * 根据id批量删除
+     * @param ids
+     */
+    void deleteInBatch(List<Long> ids);
+
+    /**
+     * 修改指定id菜品的状态
+     * @param id
+     * @param status
+     */
+    @AutoFill(OperationType.UPDATE)
+    @Update("update dish set status = #{status} where id = #{id}")
+    void updateStatus(Long id, Integer status);
+
+    /**
+     * 修改菜品
+     * @param dish
+     */
+    @AutoFill(OperationType.UPDATE)
+    void updateDish(Dish dish);
+
+    @Select("select * from dish where category_id = #{categoryId}")
+    List<Dish> selectByCategoryId(Long categoryId);
 }

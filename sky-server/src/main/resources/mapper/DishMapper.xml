@@ -32,4 +32,29 @@
             dish.category_id = category.id
         </where>
     </select>
+
+    <delete id="deleteInBatch">
+        delete from dish
+        where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <update id="updateDish">
+        update dish
+        <set>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            category_id = #{categoryId},
+            image = #{image},
+            name = #{name},
+            price = #{price}
+        </set>
+        where id = #{id}
+    </update>
 </mapper>
