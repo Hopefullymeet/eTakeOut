@@ -36,10 +36,10 @@ public interface DishFlavorMapper {
 
     /**
      * 根据dish_id筛选dish——flavor
-     * @param id
+     * @param dishId
      * @return
      */
-    @Select("select * from dish_flavor where dish_id = #{id}")
-    List<DishFlavor> selectDishFlavors(Long id);
+    @Select("select * from dish_flavor where dish_id = #{dishId}")
+    List<DishFlavor> selectDishFlavors(Long dishId);
 
 }
