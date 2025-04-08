@@ -42,43 +42,43 @@ public class Orders implements Serializable {
     //订单号
     private String number;
 
-    //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消 7退款
+    //订单状态 1待付款 2待接单 3已接单 4派送中 5已完成 6已取消 7退款 s
     private Integer status;
 
-    //下单用户id
+    //下单用户id s
     private Long userId;
 
-    //地址id
+    //地址id y
     private Long addressBookId;
 
-    //下单时间
+    //下单时间 s
     private LocalDateTime orderTime;
 
     //结账时间
     private LocalDateTime checkoutTime;
 
-    //支付方式 1微信，2支付宝
+    //支付方式 1微信，2支付宝 y
     private Integer payMethod;
 
-    //支付状态 0未支付 1已支付 2退款
+    //支付状态 0未支付 1已支付 2退款 s
     private Integer payStatus;
 
-    //实收金额
+    //实收金额 y
     private BigDecimal amount;
 
-    //备注
+    //备注 y
     private String remark;
 
-    //用户名
+    //用户名 s
     private String userName;
 
-    //手机号
+    //手机号 s
     private String phone;
 
-    //地址
+    //地址 s
     private String address;
 
-    //收货人
+    //收货人 s
     private String consignee;
 
     //订单取消原因
@@ -90,21 +90,21 @@ public class Orders implements Serializable {
     //订单取消时间
     private LocalDateTime cancelTime;
 
-    //预计送达时间
+    //预计送达时间 y
     private LocalDateTime estimatedDeliveryTime;
 
-    //配送状态  1立即送出  0选择具体时间
+    //配送状态  1立即送出  0选择具体时间 y
     private Integer deliveryStatus;
 
     //送达时间
     private LocalDateTime deliveryTime;
 
-    //打包费
+    //打包费 y
     private int packAmount;
 
-    //餐具数量
+    //餐具数量 y
     private int tablewareNumber;
 
-    //餐具数量状态  1按餐量提供  0选择具体数量
+    //餐具数量状态  1按餐量提供  0选择具体数量 y
     private Integer tablewareStatus;
 }

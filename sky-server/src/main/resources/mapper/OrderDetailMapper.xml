@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sky.mapper.OrderDetailMapper">
+    <insert id="insert">
+        insert into order_detail(name, image, order_id, number, amount
+        <if test="dishId != null">
+            , dish_id, dish_flavor
+        </if>
+        <if test="setmealId != null">
+            , setmeal_id
+        </if>
+        ) value(#{name}, #{image}, #{orderId}, #{number}, #{amount}
+        <if test="dishId != null">
+            , #{dishId}, #{dishFlavor}
+        </if>
+        <if test="setmealId != null">
+            , #{setmealId}
+        </if>
+        )
+    </insert>
+</mapper>
