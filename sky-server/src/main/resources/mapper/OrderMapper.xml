@@ -37,4 +37,29 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="selectByUserId" resultType="com.sky.entity.Orders">
+        select * from orders where user_id = #{userId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+    </select>
+    
+    <select id="conditionSelect" resultType="com.sky.entity.Orders">
+        select * from orders
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="number != null">
+                and number = #{number}
+            </if>
+            <if test="beginTime != null">
+                and order_time between #{beginTime} and #{endTime}
+            </if>
+        </where>
+    </select>
 </mapper>
