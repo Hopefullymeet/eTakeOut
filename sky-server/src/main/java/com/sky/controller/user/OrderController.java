@@ -1,13 +1,16 @@
 package com.sky.controller.user;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.mapper.OrderMapper;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.webSocket.WebSocketServer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,12 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
+
     /**
      * 用户下单
      * @param ordersSubmitDTO
@@ -36,6 +45,13 @@ public class OrderController {
     @ApiOperation("用户下单")
     public Result submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
         OrderSubmitVO orderSubmitVO = orderService.submit(ordersSubmitDTO);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", 1);
+        jsonObject.put("orderId", orderSubmitVO.getId());
+        jsonObject.put("content", "订单号" + orderSubmitVO.getOrderNumber());
+
+        webSocketServer.sendToAllClient(jsonObject.toString());
 
         return Result.success(orderSubmitVO);
     }
@@ -105,6 +121,25 @@ public class OrderController {
     @ApiOperation("再来一单")
     public Result repetition(@PathVariable Long id) {
         orderService.repetition(id);
+
+        return Result.success();
+    }
+
+    /**
+     * 用户催单
+     * @param id
+     * @return
+     */
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("用户催单")
+    public Result reminder(@PathVariable Long id) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("type", 2);
+        jsonObject.put("orderId", id);
+        jsonObject.put("content", "用户催单" + orderMapper.selectById(id).getNumber());
+
+        webSocketServer.sendToAllClient(jsonObject.toString());
 
         return Result.success();
     }

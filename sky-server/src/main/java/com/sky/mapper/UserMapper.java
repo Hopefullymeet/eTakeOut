@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
+
 /**
  * @author lyrics61
  * @version 1.0
@@ -35,4 +37,13 @@ public interface UserMapper {
      * @return
      */
     long insert(User user);
+
+    /**
+     * 用户统计
+     * @param begin
+     * @param end
+     * @return
+     */
+    @Select("select count(*) from user where create_time between #{begin} and #{end}")
+    Integer selectNewUser(LocalDateTime begin, LocalDateTime end);
 }
